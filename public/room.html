@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+<!-- This file is used to display the video room interface -->
 <html>
-<head><title>Video Room</title></head>
+<head><title>Room</title></head>
 <body>
-  <h3 id="roomHeader"></h3>
-  <video id="localVideo" autoplay muted></video>
-  <video id="remoteVideo" autoplay></video>
+  <h2 id="roomHeader"></h2>
+  <video id="localVideo" autoplay muted playsinline width="300"></video>
+  <video id="remoteVideo" autoplay playsinline width="300"></video>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>

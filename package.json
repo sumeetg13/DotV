@@ -3,7 +3,25 @@
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "express": "^4.21.2",
+    "nodemon": "^3.1.10",
+    "socket.io": "^4.8.1"
+  },
+  "scripts": {
+    "start": "nodemon -L server.js"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "description": "A simple WebRTC video call application using Socket.IO and Express.",
+  "keywords": [
+    "webrtc",
+    "video",
+    "call",
+    "socket.io",
+    "express"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusumeetg13/DotV.git"
   }
 }

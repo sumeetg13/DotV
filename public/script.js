@@ -1,38 +1,42 @@
-const socket = io()
-let pc = new RTCPeerConnection()
-let localStream
+if (window.location.pathname.startsWith("/room/")) {
+  const socket = io()
+  const roomId = window.location.pathname.split("/").pop()
+  document.getElementById('roomHeader').innerText = `Room: ${roomId}`
 
-navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-  localStream = stream
-  document.getElementById('localVideo').srcObject = stream
-  stream.getTracks().forEach(track => pc.addTrack(track, stream))
-})
+  let pc = new RTCPeerConnection()
+  let localStream
 
-pc.ontrack = e => {
-  document.getElementById('remoteVideo').srcObject = e.streams[0]
-}
+  navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+    localStream = stream
+    document.getElementById('localVideo').srcObject = stream
+    stream.getTracks().forEach(track => pc.addTrack(track, stream))
+  })
 
-pc.onicecandidate = e => {
-  if (e.candidate) socket.emit('ice-candidate', e.candidate)
-}
+  pc.ontrack = e => {
+    if (e.streams.length > 0) {
+      document.getElementById('remoteVideo').srcObject = e.streams[0]
+    }
+  }
 
-socket.on('user-joined', async () => {
-  let offer = await pc.createOffer()
-  await pc.setLocalDescription(offer)
-  socket.emit('offer', offer)
-})
+  pc.onicecandidate = e => {
+    if (e.candidate) socket.emit('ice-candidate', e.candidate)
+  }
 
-socket.on('offer', async offer => {
-  await pc.setRemoteDescription(offer)
-  let answer = await pc.createAnswer()
-  await pc.setLocalDescription(answer)
-  socket.emit('answer', answer)
-})
+  socket.emit('join', roomId)
 
-socket.on('answer', answer => pc.setRemoteDescription(answer))
-socket.on('ice-candidate', candidate => pc.addIceCandidate(candidate))
+  socket.on('user-joined', async () => {
+    const offer = await pc.createOffer()
+    await pc.setLocalDescription(offer)
+    socket.emit('offer', offer)
+  })
 
-function start() {
-  const room = prompt("Enter room ID")
-  socket.emit('join', room)
+  socket.on('offer', async offer => {
+    await pc.setRemoteDescription(offer)
+    const answer = await pc.createAnswer()
+    await pc.setLocalDescription(answer)
+    socket.emit('answer', answer)
+  })
+
+  socket.on('answer', answer => pc.setRemoteDescription(answer))
+  socket.on('ice-candidate', candidate => pc.addIceCandidate(candidate))
 }

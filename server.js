@@ -1,12 +1,16 @@
 const express = require('express')
 const http = require('http')
-const socketIO = require('socket.io')
+const { Server } = require('socket.io')
 
 const app = express()
 const server = http.createServer(app)
-const io = socketIO(server)
+const io = new Server(server)
 
 app.use(express.static('public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.get('/', (req, res) => res.sendFile(__dirname + '/public/index.html'))
+app.get('/room/:roomId', (req, res) => res.sendFile(__dirname + '/public/room.html'))
 
 io.on('connection', socket => {
   socket.on('join', room => {
@@ -18,4 +22,4 @@ io.on('connection', socket => {
   })
 })
 
-server.listen(3000, () => console.log('Server running on http://localhost:3000'))
+server.listen(3000, () => console.log('http://localhost:3000'))

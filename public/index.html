@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>WebRTC Video Call</title>
-</head>
+<head><title>Join Room</title></head>
 <body>
-  <video id="localVideo" autoplay muted></video>
-  <video id="remoteVideo" autoplay></video>
-  <button onclick="start()">Start</button>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <h2>Enter Room ID</h2>
+  <form id="joinForm">
+    <input id="roomId" required />
+    <button>Join</button>
+  </form>
+  <script>
+    document.getElementById('joinForm').onsubmit = e => {
+      e.preventDefault()
+      const room = document.getElementById('roomId').value
+      window.location.href = `/room/${room}`
+    }
+  </script>
 </body>
 </html>
